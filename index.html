@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <style>
+    .container {
+      display: block;
+    }
+    .container-edit {
+      display: none;
+    }
+  </style>
+  <head>
+    <title>My Website</title>
+  </head>
+  <body>
+    <main>
+      <div class="container" id="container">
+        First Name:
+        <h3 id="fname">Abhishek</h3>
+        Last Name:
+        <h3 id="lname">Kocharekar</h3>
+        Email:
+        <h3 id="email">abhishek@gmail.com</h3>
+        <button onClick="updateProfile()">Edit Profile</button>
+      </div>
+      <div class="container-edit" id="container-edit">
+        First Name:
+        <lable for="input-fname">
+          <input type="text" id="input-fname" value="Abhishek" /> </lable
+        ><br />
+        Last Name:
+        <lable for="input-lname">
+          <input type="text" id="input-lname" value="Kocharekar" /> </lable
+        ><br />
+        Email:
+        <lable for="input-email">
+          <input type="text" id="input-email" value="abhishek@gmail.com" />
+        </lable><br>
+        <button onClick="handleEdit()">Save Changes</button>
+      </div>
+    </main>
+  </body>
+  <script>
+    (async function init() {
+        const response = await fetch('http://localhost:3000/get-profile');
+        const user = await response.json();
+
+        document.getElementById('fname').textContent = user.fname ? user.fname : 'Abhishek';
+        document.getElementById('lname').textContent = user.lname ? user.lname : 'Kocharekar';
+        document.getElementById('email').textContent = user.email ? user.email : 'abhishek@gmail.com';
+
+        const cont = document.getElementById('container');
+        cont.style.display = 'block';
+    })();
+
+    const handleEdit = async () => {
+      const contEdit = document.getElementById("container-edit");
+      const cont = document.getElementById("container");
+
+      const payload = {
+        fname: document.getElementById("input-fname").value,
+        lname: document.getElementById("input-lname").value,
+        email: document.getElementById("input-email").value,
+      };
+
+      console.log(payload,"pl");
+
+      const response = await fetch('http://localhost:3000/update-profile', {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+      });
+      const jsonResponse = await response.json();
+
+      document.getElementById("fname").textContent = jsonResponse.fname;
+      document.getElementById("lname").textContent = jsonResponse.lname;
+      document.getElementById("email").textContent = jsonResponse.email;
+
+      cont.style.display = "block";
+      contEdit.style.display = "none";
+    };
+
+    const updateProfile = () => {
+      const contEdit = document.getElementById("container-edit");
+      const cont = document.getElementById("container");
+
+      document.getElementById("input-fname").value =
+        document.getElementById("fname").textContent;
+      document.getElementById("input-lname").value =
+        document.getElementById("lname").textContent;
+      document.getElementById("input-email").value =
+        document.getElementById("email").textContent;
+
+      cont.style.display = "none";
+      contEdit.style.display = "block";
+    };
+  </script>
+</html>

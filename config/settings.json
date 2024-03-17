@@ -1,0 +1,6 @@
+{
+    "mongoConfig": {
+      "serverUrl": "mongodb://admin:password@localhost:27017/",
+      "database": "docker-app"
+    }
+}
